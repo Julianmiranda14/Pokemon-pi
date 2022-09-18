@@ -13,20 +13,21 @@ const { Pokemon } = require('../../db')
 // Obtener un listado de los pokemons desde pokeapi.
 // Debe devolver solo los datos necesarios para la ruta principal
 router.get('/', async (req, res) => {
-    let { PokeName } = req.query
+    let { name } = req.query
+    console.log(req.query);
     try {
-        if (!PokeName) {
+        if (!name) {
             const Poke = await getApiPoke()
             const PokeDB = await getDbPoke()
             const allPoke = Poke.concat(PokeDB)
             res.send(allPoke)
         } else {
 
-            const apiData = await axios.get(`https://pokeapi.co/api/v2/pokemon`, { header: { 'e-api-key': `${APi_KEY}` } })
+            const apiData = await axios.get(`https://pokeapi.co/api/v2/pokemon${name}`, { header: { 'e-api-key': `${APi_KEY}` } })
                 .then((data) => console.log(data.data))
             var pokes = []
             apiData.data.forEach(el => {
-                if (el.PokeName.toLowerCase().includes(PokeName.toLowerCase())) {
+                if (el.name.toLowerCase().includes(name.toLowerCase())) {
                     pokes.push({
                         id: el.id,
                         name: el.name,
@@ -38,22 +39,22 @@ router.get('/', async (req, res) => {
                 }
             })
             if (pokes.length > 0) {
-                const PokeDB = await Poke.findAll({ where: { PokeName: PokeName } })
+                const PokeDB = await Poke.findAll({ where: { name: name } })
                 if (PokeDB) {
                     let allPoke = [...Pokes, ...PokeDB]
                     return res.send(allPoke)
                 }
                 return res.send(Pokes)
             } else {
-                const PokeDB = await Poke.findAll({ where: { PokeName: PokeName } })
+                const PokeDB = await Poke.findAll({ where: { name: name } })
                 if (PokeDB) {
                     res.send(PokeDB)
                 }
-                else return res.status(404).send(`does not exist(${PokeName})`)
+                else return res.status(404).send(`does not exist ${name}`)
             }
         }
-    } catch (el) {
-        console.log('error', el)
+    } catch (err) {
+        console.log('error', err)
     }
 });
 
@@ -163,8 +164,7 @@ router.get('/:id', async (req, res) => {
 
 
  router.get('/pokemons', async (req, res) => {
-     let { name } = req.query
-     console.log(req.query);
+
      try {
         if (name) {
             const apiData = await axios.get(`https://pokeapi.co/api/v2/pokemon?=${name}`, { header: { 'e-api-key': `${APi_KEY}` } })
