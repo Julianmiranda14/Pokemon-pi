@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const axios = require('axios')
-const { APi_KEY } = process.env
+
 const { Type } = require('../../db')
 
 router.get('/', async (req, res) => {
@@ -14,17 +14,17 @@ router.get('/', async (req, res) => {
 
             const typeData = types
             await typeData.data.results.forEach(el => {
-                Type.create({...el })
-                
+                Type.create({ ...el })
+
             })
-            
+
             console.log(types.data.results)
-        }catch (err) {
-        res.send(err)
+        } catch (err) {
+            res.send(err)
         }
     }
 })
-    
+
 
 
 
