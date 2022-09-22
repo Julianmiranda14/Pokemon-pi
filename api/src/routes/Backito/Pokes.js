@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const axios = require('axios')
-
 const { APi_KEY } = process.env
 const { Pokemon } = require('../../db')
 // GET https://pokeapi.co/api/v2/pokemon
@@ -34,7 +33,6 @@ router.get('/', async (req, res) => {
                 const pokes = {
                     id: PokeDB.id,
                     name: PokeDB.name,
-                    // type: PokeDB.types,
                     img: PokeDB.img,
                     weight: PokeDB.weight,
                     height: PokeDB.height,
